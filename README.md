@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# laravel-menu
-=======
 # Laravel Drag and Drop menu editor like wordpress
 
 [![Latest Stable Version](https://poser.pugx.org/harimayco/laravel-menu/v/stable)](https://packagist.org/packages/harimayco/laravel-menu) [![Latest Unstable Version](https://poser.pugx.org/harimayco/laravel-menu/v/unstable)](https://packagist.org/packages/harimayco/laravel-menu) [![Total Downloads](https://poser.pugx.org/harimayco/laravel-menu/downloads)](https://packagist.org/packages/harimayco/laravel-menu) [![Monthly Downloads](https://poser.pugx.org/harimayco/laravel-menu/d/monthly)](https://packagist.org/packages/harimayco/laravel-menu)
@@ -188,4 +185,3 @@ you can edit the menu interface in **_resources/views/vendor/wmenu/menu-html.bla
 ### KNOWN ISSUES
 
 - Not working with RTL websites [#21](https://github.com/harimayco/wmenu-builder/issues/21) (pull requests are welcome)
->>>>>>> 53e4a6733ddc4f99a74cf83636c32d3617bd322a
