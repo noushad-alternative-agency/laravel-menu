@@ -10,7 +10,7 @@ forked from https://github.com/lordmacu/wmenu
 1. Run
 
 ```php
-composer require custom/laravel-menu
+composer require custom-menu-builder/laravel-menu
 ```
 
 **_Step 2 & 3 are optional if you are using laravel 5.5_**
