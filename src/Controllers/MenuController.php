@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Harimayco\Menu\Models\Menus;
 use Harimayco\Menu\Models\MenuItems;
+use Illuminate\Support\Str;
 
 class MenuController extends Controller
 {
@@ -23,7 +24,7 @@ class MenuController extends Controller
 
     public function deleteitemmenu()
     {
-        $menuitem = MenuItems::find(request()->input("id"));
+        $menuitem = MenuItems::where('uuid',request()->input("id"))->first();
 
         $menuitem->delete();
     }
@@ -33,7 +34,7 @@ class MenuController extends Controller
         $menus = new MenuItems();
         $getall = $menus->getall(request()->input("id"));
         if (count($getall) == 0) {
-            $menudelete = Menus::find(request()->input("id"));
+            $menudelete = Menus::where('uuid',request()->input("id"))->first();
             $menudelete->delete();
 
             return json_encode(array("resp" => "you delete this item"));
@@ -48,7 +49,7 @@ class MenuController extends Controller
         $arraydata = request()->input("arraydata");
         if (is_array($arraydata)) {
             foreach ($arraydata as $value) {
-                $menuitem = MenuItems::find($value['id']);
+                $menuitem = MenuItems::where('uuid',$value['id'])->first();
                 $menuitem->label = $value['label'];
                 $menuitem->link = $value['link'];
                 $menuitem->class = $value['class'];
@@ -58,7 +59,7 @@ class MenuController extends Controller
                 $menuitem->save();
             }
         } else {
-            $menuitem = MenuItems::find(request()->input("id"));
+            $menuitem = MenuItems::where('uuid',request()->input("id"))->first();
             $menuitem->label = request()->input("label");
             $menuitem->link = request()->input("url");
             $menuitem->class = request()->input("clases");
@@ -69,18 +70,27 @@ class MenuController extends Controller
         }
     }
 
-    public function addcustommenu()
+    public function addcustommenu(Request $request)
     {
-
+       if(request()->input("website_id")!=""){
+        $uid =  Str::uuid();
         $menuitem = new MenuItems();
         $menuitem->label = request()->input("labelmenu");
         $menuitem->link = request()->input("linkmenu");
+        $menuitem->uuid =  $uid;
+        $menuitem->parent =  0;
+        $menuitem->website_id = request()->input("website_id");
         if (config('menu.use_roles')) {
             $menuitem->role_id = request()->input("rolemenu") ? request()->input("rolemenu")  : 0 ;
         }
         $menuitem->menu = request()->input("idmenu");
+        $menuitem->type = request()->input("type");
         $menuitem->sort = MenuItems::getNextSortRoot(request()->input("idmenu"));
         $menuitem->save();
+        echo "sucess";
+    }else{
+        echo "fail";
+    }
 
     }
 
@@ -93,8 +103,9 @@ class MenuController extends Controller
         if (is_array(request()->input("arraydata"))) {
             foreach (request()->input("arraydata") as $value) {
 
-                $menuitem = MenuItems::find($value["id"]);
+                $menuitem = MenuItems::where('uuid',$value["uuid"])->first();
                 $menuitem->parent = $value["parent"];
+              
                 $menuitem->sort = $value["sort"];
                 $menuitem->depth = $value["depth"];
                 if (config('menu.use_roles')) {

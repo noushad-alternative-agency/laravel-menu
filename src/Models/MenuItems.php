@@ -3,6 +3,7 @@
 namespace Harimayco\Menu\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class MenuItems extends Model
 {
@@ -11,6 +12,8 @@ class MenuItems extends Model
 
     protected $fillable = ['label', 'link', 'parent', 'sort', 'class', 'menu', 'depth', 'role_id'];
 
+        
+     
     public function __construct(array $attributes = [])
     {
         //parent::construct( $attributes );
@@ -33,11 +36,14 @@ class MenuItems extends Model
 
     public function parent_menu()
     {
-        return $this->belongsTo('Harimayco\Menu\Models\Menus', 'menu');
+        // return $this->belongsTo('Harimayco\Menu\Models\Menus', 'menu');
+        return $this->belongsTo('Harimayco\Menu\Models\MenuItems', ['parent','website_id'],['uuid','website_id'] )->orderBy('sort', 'ASC');
     }
 
     public function child()
     {
-        return $this->hasMany('Harimayco\Menu\Models\MenuItems', 'parent')->orderBy('sort', 'ASC');
+        //return $this->hasMany('Harimayco\Menu\Models\MenuItems', 'parent')->orderBy('sort', 'ASC');
+        // return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['parent','wb id'], 'uuid'])->orderBy('sort', 'ASC');
+         return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['uuid','website_id'],['parent','website_id'] )->orderBy('sort', 'ASC');
     }
 }

@@ -1,19 +1,21 @@
 <?php
-
 namespace Harimayco\Menu;
-
 use App\Http\Requests;
 use Harimayco\Menu\Models\Menus;
 use Harimayco\Menu\Models\MenuItems;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\Page;
 class WMenu
 {
 
     public function render()
     {
+       $website_id = request()->route()->parameter('website_id');
+       $menu_id =  request()->input("menu");
+        //$pages = Page::where('website_id',$website_id); 
+        
         $menu = new Menus();
-        $menuitems = new MenuItems();
+        //$menuitems = new MenuItems();
         $menulist = $menu->select(['id', 'name'])->get();
         $menulist = $menulist->pluck('name', 'id')->prepend('Select menu', 0)->all();
 
@@ -22,11 +24,14 @@ class WMenu
         if ((request()->has("action") && empty(request()->input("menu"))) || request()->input("menu") == '0') {
             return view('wmenu::menu-html')->with("menulist" , $menulist);
         } else {
+            $page = new Page;
+            $pageTree = $page->tree($website_id);
 
+           
             $menu = Menus::find(request()->input("menu"));
-            $menus = $menuitems->getall(request()->input("menu"));
+            $menus = MenuItems::where("menu",$menu_id)->where('website_id',$website_id)->orderBy("sort", "asc")->get();
 
-            $data = ['menus' => $menus, 'indmenu' => $menu, 'menulist' => $menulist];
+            $data = ['menus' => $menus, 'indmenu' => $menu, 'menulist' => $menulist,'pages'=>$pageTree];
             if( config('menu.use_roles')) {
                 $data['roles'] = DB::table(config('menu.roles_table'))->select([config('menu.roles_pk'),config('menu.roles_title_field')])->get();
                 $data['role_pk'] = config('menu.roles_pk');
@@ -44,7 +49,7 @@ class WMenu
 
     public function select($name = "menu", $menulist = array())
     {
-        $html = '<select name="' . $name . '">';
+        $html = '<select id="idmenu" name="' . $name . '">';
 
         foreach ($menulist as $key => $val) {
             $active = '';
@@ -74,7 +79,7 @@ class WMenu
     public static function get($menu_id)
     {
         $menuItem = new MenuItems;
-        $menu_list = $menuItem->getall($menu_id);
+         $menu_list = $menuItem->getall($menu_id, $website_id);
 
         $roots = $menu_list->where('menu', (integer) $menu_id)->where('parent', 0);
 
