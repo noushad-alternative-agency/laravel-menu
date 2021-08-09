@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
     "name": "custom-menu-builder/laravel-menu",
+=======
+    "name": "custom/laravel-menu",
+>>>>>>> 53e4a6733ddc4f99a74cf83636c32d3617bd322a
     "description": "drag and drop menu generator like wordpress for laravel 5",
     "keywords": ["Laravel", "Menu", "Wordpress", "Builder"],
     "authors": [

@@ -1,11 +1,13 @@
 <?php
 $currentUrl = url()->current();
+
 ?>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 <link href="{{asset('vendor/harimayco-menu/style.css')}}" rel="stylesheet">
+<input type="hidden" value="{{request()->website_id}}" id="website_id">
 <div id="hwpwrap">
-	<div class="custom-wp-admin wp-admin wp-core-ui js   menu-max-depth-0 nav-menus-php auto-fold admin-bar">
+	<div class="px-5 py-3 custom-wp-admin wp-admin wp-core-ui js   menu-max-depth-0 nav-menus-php auto-fold admin-bar">
 		<div id="wpwrap">
 			<div id="wpcontent">
 				<div id="wpbody">
@@ -78,6 +80,27 @@ $currentUrl = url()->current();
 
 											</ul>
 										</div>
+
+										<div id="side-sortables" class="accordion-container mt-4">
+											<ul class="outer-border">
+											
+											<li class="control-section accordion-section  open add-page" id="add-page">
+													<h3 class="accordion-section-title hndle" tabindex="0"> Pages <span class="screen-reader-text">Press return or enter to expand</span></h3>
+													<div class="accordion-section-content ">
+												@if(count($pages)>0)	
+												<ul class="navbar-nav ">
+													@each('subpages', $pages, 'menu', 'empty')
+												</ul>
+												@else
+													<p>No pages found</p>
+													<a href="{{route('dashboard.web')}}">add new</a>
+												@endif
+											</div>
+											<li>
+																				
+
+											</ul>
+										</div>
 									</form>
 
 								</div>
@@ -133,42 +156,45 @@ $currentUrl = url()->current();
 														<ul class="menu ui-sortable" id="menu-to-edit">
 															@if(isset($menus))
 															@foreach($menus as $m)
-															<li id="menu-item-{{$m->id}}" class="menu-item menu-item-depth-{{$m->depth}} menu-item-page menu-item-edit-inactive pending" style="display: list-item;">
+														
+															<li id="menu-item-{{$m->uuid}}" class="menu-item menu-item-depth-{{$m->depth}} menu-item-page menu-item-edit-inactive pending" style="display: list-item;">
 																<dl class="menu-item-bar">
 																	<dt class="menu-item-handle">
-																		<span class="item-title"> <span class="menu-item-title"> <span id="menutitletemp_{{$m->id}}">{{$m->label}}</span> <span style="color: transparent;">|{{$m->id}}|</span> </span> <span class="is-submenu" style="@if($m->depth==0)display: none;@endif">Subelement</span> </span>
-																		<span class="item-controls"> <span class="item-type">Link</span> <span class="item-order hide-if-js"> <a href="{{ $currentUrl }}?action=move-up-menu-item&menu-item={{$m->id}}&_wpnonce=8b3eb7ac44" class="item-move-up"><abbr title="Move Up">↑</abbr></a> | <a href="{{ $currentUrl }}?action=move-down-menu-item&menu-item={{$m->id}}&_wpnonce=8b3eb7ac44" class="item-move-down"><abbr title="Move Down">↓</abbr></a> </span> <a class="item-edit" id="edit-{{$m->id}}" title=" " href="{{ $currentUrl }}?edit-menu-item={{$m->id}}#menu-item-settings-{{$m->id}}"> </a> </span>
+																		<span class="item-title"> <span class="menu-item-title"> 
+																			<span id="menutitletemp_{{$m->uuid}}">{{$m->label}}</span> 
+																			<span style="color: transparent;display:none">|{{$m->uuid}}|</span> </span> 
+																			<span class="is-submenu" style="@if($m->depth==0)display: none;@endif">Subelement</span> </span>
+																		<span class="item-controls"> <span class="item-type">{{$m->type}}</span> <span class="item-order hide-if-js"> <a href="{{ $currentUrl }}?action=move-up-menu-item&menu-item={{$m->uuid}}&_wpnonce=8b3eb7ac44" class="item-move-up"><abbr title="Move Up">↑</abbr></a> | <a href="{{ $currentUrl }}?action=move-down-menu-item&menu-item={{$m->uuid}}&_wpnonce=8b3eb7ac44" class="item-move-down"><abbr title="Move Down">↓</abbr></a> </span> <a class="item-edit" id="edit-{{$m->uuid}}" title=" " href="{{ $currentUrl }}?edit-menu-item={{$m->uuid}}#menu-item-settings-{{$m->uuid}}"> </a> </span>
 																	</dt>
 																</dl>
 
-																<div class="menu-item-settings" id="menu-item-settings-{{$m->id}}">
-																	<input type="hidden" class="edit-menu-item-id" name="menuid_{{$m->id}}" value="{{$m->id}}" />
+																<div class="menu-item-settings" id="menu-item-settings-{{$m->uuid}}">
+																	<input type="hidden" class="edit-menu-item-id" name="menuid_{{$m->uuid}}" value="{{$m->uuid}}" />
 																	<p class="description description-thin">
-																		<label for="edit-menu-item-title-{{$m->id}}"> Label
+																		<label for="edit-menu-item-title-{{$m->uuid}}"> Label
 																			<br>
-																			<input type="text" id="idlabelmenu_{{$m->id}}" class="widefat edit-menu-item-title" name="idlabelmenu_{{$m->id}}" value="{{$m->label}}">
+																			<input type="text" id="idlabelmenu_{{$m->uuid}}" class="widefat edit-menu-item-title" name="idlabelmenu_{{$m->uuid}}" value="{{$m->label}}">
 																		</label>
 																	</p>
-
 																	<p class="field-css-classes description description-thin">
-																		<label for="edit-menu-item-classes-{{$m->id}}"> Class CSS (optional)
+																		<label for="edit-menu-item-classes-{{$m->uuid}}"> Class CSS (optional)
 																			<br>
-																			<input type="text" id="clases_menu_{{$m->id}}" class="widefat code edit-menu-item-classes" name="clases_menu_{{$m->id}}" value="{{$m->class}}">
+																			<input type="text" id="clases_menu_{{$m->uuid}}" class="widefat code edit-menu-item-classes" name="clases_menu_{{$m->uuid}}" value="{{$m->class}}">
 																		</label>
 																	</p>
 
 																	<p class="field-css-url description description-wide">
-																		<label for="edit-menu-item-url-{{$m->id}}"> Url
+																		<label for="edit-menu-item-url-{{$m->uuid}}"> Url
 																			<br>
-																			<input type="text" id="url_menu_{{$m->id}}" class="widefat code edit-menu-item-url" id="url_menu_{{$m->id}}" value="{{$m->link}}">
+																			<input type="text" id="url_menu_{{$m->uuid}}" class="widefat code edit-menu-item-url" id="url_menu_{{$m->uuid}}" value="{{$m->link}}">
 																		</label>
 																	</p>
 
 																	@if(!empty($roles))
 																	<p class="field-css-role description description-wide">
-																		<label for="edit-menu-item-role-{{$m->id}}"> Role
+																		<label for="edit-menu-item-role-{{$m->uuid}}"> Role
 																			<br>
-																			<select id="role_menu_{{$m->id}}" class="widefat code edit-menu-item-role" name="role_menu_[{{$m->id}}]" >
+																			<select id="role_menu_{{$m->uuid}}" class="widefat code edit-menu-item-role" name="role_menu_[{{$m->uuid}}]" >
 																				<option value="0">Select Role</option>
 																				@foreach($roles as $role)
 																					<option @if($role->id == $m->role_id) selected @endif value="{{ $role->$role_pk }}">{{ ucwords($role->$role_title_field) }}</option>
@@ -179,16 +205,20 @@ $currentUrl = url()->current();
 																	@endif
 
 																	<p class="field-move hide-if-no-js description description-wide">
-																		<label> <span>Move</span> <a href="{{ $currentUrl }}" class="menus-move-up" style="display: none;">Move up</a> <a href="{{ $currentUrl }}" class="menus-move-down" title="Mover uno abajo" style="display: inline;">Move Down</a> <a href="{{ $currentUrl }}" class="menus-move-left" style="display: none;"></a> <a href="{{ $currentUrl }}" class="menus-move-right" style="display: none;"></a> <a href="{{ $currentUrl }}" class="menus-move-top" style="display: none;">Top</a> </label>
+																		<label> <span>Move</span> <a href="{{ $currentUrl }}" class="menus-move-up" style="display: none;">Move up</a> 
+																		<a href="{{ $currentUrl }}" class="menus-move-down" title="Mover uno abajo" style="display: inline;">Move Down</a> 
+																		<a href="{{ $currentUrl }}" class="menus-move-left" style="display: none;"></a> 
+																		<a href="{{ $currentUrl }}" class="menus-move-right" style="display: none;"></a>
+																		 <a href="{{ $currentUrl }}" class="menus-move-top" style="display: none;">Top</a> </label>
 																	</p>
 
 																	<div class="menu-item-actions description-wide submitbox">
 
-																		<a class="item-delete submitdelete deletion" id="delete-{{$m->id}}" href="{{ $currentUrl }}?action=delete-menu-item&menu-item={{$m->id}}&_wpnonce=2844002501">Delete</a>
+																		<a class="item-delete submitdelete deletion" id="delete-{{$m->uuid}}" href="{{ $currentUrl }}?action=delete-menu-item&menu-item={{$m->uuid}}&_wpnonce=2844002501">Delete</a>
 																		<span class="meta-sep hide-if-no-js"> | </span>
-																		<a class="item-cancel submitcancel hide-if-no-js button-secondary" id="cancel-{{$m->id}}" href="{{ $currentUrl }}?edit-menu-item={{$m->id}}&cancel=1424297719#menu-item-settings-{{$m->id}}">Cancel</a>
+																		<a class="item-cancel submitcancel hide-if-no-js button-secondary" id="cancel-{{$m->uuid}}" href="{{ $currentUrl }}?edit-menu-item={{$m->uuid}}&cancel=1424297719#menu-item-settings-{{$m->uuid}}">Cancel</a>
 																		<span class="meta-sep hide-if-no-js"> | </span>
-																		<a onclick="getmenus()" class="button button-primary updatemenu" id="update-{{$m->id}}" href="javascript:void(0)">Update item</a>
+																		<a onclick="getmenus()" class="button button-primary updatemenu" id="update-{{$m->uuid}}" href="javascript:void(0)">Update item</a>
 
 																	</div>
 
