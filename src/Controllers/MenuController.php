@@ -49,6 +49,10 @@ class MenuController extends Controller
         $arraydata = request()->input("arraydata");
         if (is_array($arraydata)) {
             foreach ($arraydata as $value) {
+                //MenuItems::where('label',$value['label'])->where('link',$value['link'])->first();
+                
+
+
                 $menuitem = MenuItems::where('uuid',$value['id'])->first();
                 $menuitem->label = $value['label'];
                 $menuitem->link = $value['link'];
@@ -74,6 +78,8 @@ class MenuController extends Controller
     {
        if(request()->input("website_id")!=""){
         $uid =  Str::uuid();
+        $exist =  MenuItems::where('menu',request()->input("idmenu"))->where('website_id',request()->input("website_id"))->where('label',request()->input("labelmenu"))->where('parent','0')->first();
+        if(!$exist){
         $menuitem = new MenuItems();
         $menuitem->label = request()->input("labelmenu");
         $menuitem->link = request()->input("linkmenu");
@@ -88,6 +94,8 @@ class MenuController extends Controller
         $menuitem->sort = MenuItems::getNextSortRoot(request()->input("idmenu"));
         $menuitem->save();
         echo "sucess";
+    }
+  
     }else{
         echo "fail";
     }
@@ -101,8 +109,10 @@ class MenuController extends Controller
 
         $menu->save();
         if (is_array(request()->input("arraydata"))) {
+            
             foreach (request()->input("arraydata") as $value) {
-
+            $items = MenuItems::where('label',$value['label'])->where('link',$value['link'])->where('website_id',$value['website_id'])->where('menu',request()->input("idmenu"))->where('parent',$value["parent"])->first();
+                if(!$items){
                 $menuitem = MenuItems::where('uuid',$value["uuid"])->first();
                 $menuitem->parent = $value["parent"];
               
@@ -113,6 +123,7 @@ class MenuController extends Controller
                 }
                 $menuitem->save();
             }
+        }
         }
         echo json_encode(array("resp" => 1));
 
