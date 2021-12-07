@@ -23,4 +23,8 @@ class Menus extends Model
     {
         return $this->hasMany('Harimayco\Menu\Models\MenuItems', 'menu')->with('child')->where('parent', 0)->orderBy('sort', 'ASC');
     }
+    public function menu_items()
+    {
+        return $this->hasMany('Harimayco\Menu\Models\MenuItems', 'menu')->with('children_menu')->where('parent', 0)->orderBy('sort', 'ASC');
+    }
 }
