@@ -46,10 +46,13 @@ class MenuItems extends Model
         // return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['parent','wb id'], 'uuid'])->orderBy('sort', 'ASC');
          return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['uuid','website_id'],['parent','website_id'] )->orderBy('sort', 'ASC');
     }
-    public function children_menu()
+    public function parent()
     {
-        return $this->hasMany('Harimayco\Menu\Models\MenuItems', 'parent')->orderBy('sort', 'ASC');
-        // return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['parent','wb id'], 'uuid'])->orderBy('sort', 'ASC');
-        // return $this->hasMany('Harimayco\Menu\Models\MenuItems', ['uuid','website_id'],['parent','website_id'] )->orderBy('sort', 'ASC');
+        return $this->hasMany ('Harimayco\Menu\Models\MenuItems','parent','uuid')->where('depth',0)->with('parent');
+    }
+    
+    public function children()
+    {
+        return $this->hasMany('Harimayco\Menu\Models\MenuItems','parent','uuid')->with('children');
     }
 }
